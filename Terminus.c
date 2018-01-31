@@ -25,6 +25,7 @@ int main() {
 	int choice = 0;
 	char username[64];
 	char yn;
+	int move;
 	
 	char *classes[3];
 	classes[0] = "Warrior";
@@ -89,9 +90,9 @@ int main() {
 		exit(1);
 		
 	}
-	
 	printf("\n\n");
-	printf("[%d:%d]\n", hour, min);
+	do {
+	printf("\n[%d:%d]\n", hour, min);
 	printf("_______________________________________________________\n");
 	printf("|[%s] [Health: %d] [Mana: %d] [Stamina: %d] [%d,%d]\n", username, player_health, mana, stamina, posx, posy);
 	printf("|[Level: %d] [%s]\n", level, classes[choice -1]);	
@@ -107,8 +108,60 @@ int main() {
 	printf("|(8) Skills\n");
 	printf("|(9) Options\n");
 	printf("_______________________________________________________\n");
+	printf("|:-> ");
+	fgets(buffer, sizeof(buffer), stdin);
+	sscanf(buffer, "%d", &move);
+	printf("\n|======================================================\n");
+	
+	switch(move) {
+		
+		case 0:
+			printf("\nWould you like to quit? y/N\n");
+			fgets(buffer, sizeof(buffer), stdin);
+			sscanf(buffer, "%c", &yn);
+			if(yn == 'y' || yn == 'Y') {
+				printf("\nGame Over, %s.\n\n", classes[choice-1]);
+				exit(1);
+			} else {
+				break;
+			}
+			break;
+		case 1: 
+			posy++;
+			stamina--;
+			min++;
+			break;
+		case 2:
+			posy--;
+			stamina--;
+			min++;
+			break;
+		case 3:
+			posx++;
+			stamina--;
+			min++;
+			break;
+		case 4: 
+			posx--;
+			stamina--;
+			min++;
+		case 5:
+			stamina++;
+			min++;
+			break;
+		case 6:
+			break;
+		case 7:
+			break;
+		case 8:
+			break;
+		case 9:
+			break;
+	}
 	
 	
+	
+	} while(move != 0);
 	
 	
 	
