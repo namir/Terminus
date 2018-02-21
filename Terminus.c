@@ -3,7 +3,7 @@
 * @date 9/23/2017
 * @name Terminus
 * @brief Text-based RPG game
-* @bug non-critical warning during compliation  
+* @bug None
 */
 
 #include <stdio.h>
@@ -13,6 +13,17 @@
 #define SIZE 1024
 
 void printIntro();
+
+
+struct item_t {
+	
+	int damage;
+	int stat;
+	int def;
+	int att;
+	int str;
+	char name;
+};
 
 int main() {
 	
@@ -24,7 +35,8 @@ int main() {
 	int choice = 0;
 	char username[32];
 	char yn;
-	int move;
+	char move;
+	int move2;
 	
 	char *classes[3];
 	classes[0] = "Warrior";
@@ -39,21 +51,43 @@ int main() {
 	int level = 1;
 	int stamina = 20;
 	int xp = 0;
+	int dmg = 0;
+	int basedmg = 10;
+
+	/* Enemy Stats */
+	char *monster[1];
+	monster[0] = "Goblin";
+	int monsterHP = 50;
+	int monsterLevel = 3;
+	int monsterXP = 25;
+	int monsterDMG = 5;
+	int mposx = 4;
+	int mposy = 4;
+	int dead = 0;
 	
 	/* World Stats */
 	int hour = 23;
 	int min = 45;
 	int posx = 0;
 	int posy = 0;
-	char location[32];
+	char *location[5];
+	char *setloc;
+	location[0] = "Forest";
+	location[1] = "City";
+	location[2] = "Town";
+	location[3] = "Tavern";
+	location[4] = "River";
 
 	// misc
 	int count = 0;
-	int time;
+	int time = 0;
+	int n = 1;
 	
 	// Welcome
-	printf("\n\n\n\n\n");
-	printf("Hello, welcome to Terminus!\n");
+	printf("\n");
+	printf(" ______________________\n");
+	printf("| Welcome to Terminus! |\n");
+	printf(" ----------------------\n\n");
 	printf("Choose your class:\n\n1.) Warrior\n2.) Wizard\n3.) Hunter\n\n:");
 	fgets(buffer, sizeof(buffer), stdin);
 	sscanf(buffer, "%d", &choice);
@@ -93,6 +127,8 @@ int main() {
 	
 
 	printf("\n\n");
+
+	//tutorial
 	do {
 	time++;
 	if(min < 10) {
@@ -115,10 +151,10 @@ int main() {
 	printf("_______________________________________________________\n");
 	printf("|:-> ");
 	fgets(buffer, sizeof(buffer), stdin);
-	sscanf(buffer, "%d", &move);
+	sscanf(buffer, "%s", &move);
 	printf("\n|======================================================\n");
 	
-	if (move == 1) {
+	if (move == 'w' || move == 'W') {
 
 		if(count == 0) {
 		printf("\n\nYou have moved one space forward! Notice the position [x,y]\n");
@@ -129,7 +165,7 @@ int main() {
 			printf("\n\nEvery time you move, stamina will decrease!\n");
 			count = 0;
 		}
-	} else if (move == 2) {
+	} else if (move == 's' || move == 'S') {
 
 		if(count == 0) {
 		printf("\n\nYou have moved one space backward! Notice the position [x,y]\n");
@@ -141,7 +177,7 @@ int main() {
 			count = 0;
 		}
 
-	} else if (move == 3) {
+	} else if (move == 'd' || move == 'D') {
 
 		if(count == 0) {
 		printf("\n\nYou have moved one space right! Notice the position [x,y]\n");
@@ -153,7 +189,7 @@ int main() {
 			count = 0;
 		}
 
-	} else if (move == 4) {
+	} else if (move == 'a' || move == 'A') {
 
 		if(count == 0) {
 		printf("\n\nYou have moved one space left! Notice the position [x,y]\n");
@@ -169,125 +205,8 @@ int main() {
 
 	switch(move) {
 		
-		case 0:
-			printf("\nWould you like to quit? y/N\n");
-			fgets(buffer, sizeof(buffer), stdin);
-			sscanf(buffer, "%c", &yn);
-			if(yn == 'y' || yn == 'Y') {
-				printf("\nGame Over, %s.\n\n", classes[choice-1]);
-				exit(1);
-			} else {
-				break;
-			}
-			break;
-		case 1: 
-			min++;
-			if(stamina == 0) {
-				printf("\n\nOUT OF STAMINA!\n\n");
-				break;
-			}
-			posy++;
-			stamina--;
-			if(min == 60) {
-		    	hour++;
-		    	min = 0;
-			}
-			break;
-		case 2:
-			min++;
-			if(stamina == 0) {
-				printf("\n\nOUT OF STAMINA!\n\n");
-				break;
-			}
-			posy--;
-			stamina--;
-			if(min == 60) {
-		    	hour++;
-		    	min = 0;
-			}
-			break;
-		case 3:
-			min++;
-			if(stamina == 0) {
-				printf("\n\nOUT OF STAMINA!\n\n");
-				break;
-			}
-			posx++;
-			stamina--;
-			if(min == 60) {
-		    	hour++;
-		    	min = 0;
-			}
-			break;
-		case 4: 
-			min++;
-			if(stamina == 0) {
-				printf("\n\nOUT OF STAMINA!\n\n");
-				break;
-			}
-			posx--;
-			stamina--;
-			if(min == 60) {
-		    	hour++;
-		    	min = 0;
-			}
-		case 5:
-			stamina++;
-			min++;
-			if(min == 60) {
-		    	hour++;
-		    	min = 0;
-			}
-			break;
-		case 6:
-			break;
-		case 7:
-			break;
-		case 8:
-			break;
-		case 9:
-			break;
-	}
-	
-	
-	
-	} while(move != 0);
-		
-	}
-	printf("\n\n");
-	do {
-	time++;
-	if(min < 10) {
-		printf("\nTIME:[%d:0%d]\n", hour, min);
-	} else {
-		printf("\nTIME:[%d:%d]\n", hour, min);
-	}
-	if(hour > 23) {
-		hour = 0;
-	}
-	printf("_______________________________________________________\n");
-	printf("|[%s] [Health: %d] [Mana: %d] [Stamina: %d] [%d,%d]\n", username, player_health, mana, stamina, posx, posy);
-	printf("|[Level: %d] [%s]\n", level, classes[choice -1]);	
-	printf("|[EXP: %d]\n", xp);
-	printf("|\n");
-	printf("|(1) Move Forward\n");
-	printf("|(2) Move Backward\n");
-	printf("|(3) Move Right\n");
-	printf("|(4) Move Left\n");
-	printf("|(5) Wait\n");
-	printf("|(6) Attack\n");
-	printf("|(7) Inventory\n");
-	printf("|(8) Skills\n");
-	printf("|(9) Options\n");
-	printf("_______________________________________________________\n");
-	printf("|:-> ");
-	fgets(buffer, sizeof(buffer), stdin);
-	sscanf(buffer, "%d", &move);
-	printf("\n|======================================================\n");
-	
-	switch(move) {
-		
-		case 0:
+		case 'q':
+		case 'Q':
 			printf("\nWould you like to quit? y/N\n");
 			fgets(buffer, sizeof(buffer), stdin);
 			sscanf(buffer, "%c", &yn);
@@ -302,7 +221,8 @@ int main() {
 				break;
 			}
 			break;
-		case 1: 
+		case 'w':
+		case 'W': 
 			min++;
 			if(stamina == 0) {
 				printf("\n\nOUT OF STAMINA!\n\n");
@@ -316,7 +236,8 @@ int main() {
 		    	min = 0;
 			}
 			break;
-		case 2:
+		case 's':
+		case 'S':
 			min++;
 			if(stamina == 0) {
 				printf("\n\nOUT OF STAMINA!\n\n");
@@ -330,7 +251,8 @@ int main() {
 		    	min = 0;
 			}
 			break;
-		case 3:
+		case 'd':
+		case 'D':
 			min++;
 			if(stamina == 0) {
 				printf("\n\nOUT OF STAMINA!\n\n");
@@ -343,7 +265,8 @@ int main() {
 		    	min = 0;
 			}
 			break;
-		case 4: 
+		case 'a':
+		case 'A':
 			min++;
 			if(stamina == 0) {
 				printf("\n\nOUT OF STAMINA!\n\n");
@@ -355,7 +278,8 @@ int main() {
 		    	hour++;
 		    	min = 0;
 			}
-		case 5:
+		case 'r':
+		case 'R':
 			stamina++;
 			min++;
 			if(min == 60) {
@@ -363,19 +287,323 @@ int main() {
 		    	min = 0;
 			}
 			break;
-		case 6:
-			break;
-		case 7:
-			break;
-		case 8:
-			break;
-		case 9:
-			break;
 	}
 	
 	
 	
 	} while(move != 0);
+		
+	}
+	printf("\n\n");
+
+
+
+
+
+
+
+
+
+
+
+	//game
+
+
+
+	do {
+	if(xp == 100) {
+		level++;
+	} else if (xp > 100) {
+		level++;
+		// xp = (xp - 100) + xp
+	} else {
+
+	}
+
+	time++;
+	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+	if(min < 10) {
+		printf("\nTIME:[%d:0%d]\n", hour, min);
+	} else {
+		printf("\nTIME:[%d:%d]\n", hour, min);
+	}
+	if(hour > 23) {
+		hour = 0;
+	}
+
+	if(n == 1){
+		if(posx >= 5 && posx <= 15 && posy >= 5 && posy <= 15) {
+			if(stamina == 0){
+				if(min == 59){
+					min = 0;
+					hour++;
+					min -= 1;
+				}
+			}
+			setloc = location[1];
+		} else if(posx >= 25 && posx <= 50 && posy >= 30 && posy <= 60){
+			if(stamina == 0){
+				if(min == 59){
+					min = 0;
+					hour++;
+					min -= 1;
+				}
+			}
+			setloc = location[2];
+
+		} else {
+			if(stamina == 0){
+				if(min == 59){
+					min = 0;
+					hour++;
+					min -= 1;
+				}
+			}
+			setloc = location[0];
+		}
+	}
+	printf("_________________________________________________________________\n");
+	printf("|[%s] [Health: %d] [Mana: %d] [Stamina: %d] [%d,%d] [%s]\n", username, player_health, mana, stamina, posx, posy, setloc);
+	printf("|[Level: %d] [%s]\n", level, classes[choice -1]);	
+	printf("|[EXP: %d]\n", xp);
+	printf("|\n");
+	printf("|(W) Move Forward\n");
+	printf("|(A) Move Backward\n");
+	printf("|(S) Move Right\n");
+	printf("|(D) Move Left\n");
+	printf("|\n");
+	printf("|(R) Rest\n");
+	printf("|(E) Attack\n");
+	printf("|\n");
+	printf("|(I) Inventory\n");
+	printf("|(K) Skills\n");
+	printf("|(O) Options\n");
+	printf("|\n");
+	printf("|(Q) Quit\n");
+	printf("_________________________________________________________________\n");
+	printf("|:-> ");
+	fgets(buffer, sizeof(buffer), stdin);
+	sscanf(buffer, "%s", &move);
+	printf("\n|==============================================================\n");
+	
+	switch(move) {
+		
+		case 'q':
+		case 'Q':
+			printf("\nWould you like to quit? y/N\n");
+			fgets(buffer, sizeof(buffer), stdin);
+			sscanf(buffer, "%c", &yn);
+			if(yn == 'y' || yn == 'Y') {
+				printf("\nGame Over, %s.\n\n", classes[choice-1]);
+				printf(".: %s's Stats :.\n", username);
+				printf("Total Experience: %d\n", xp);
+				printf("Total Level: %d\n", level);
+				printf("Time Spent: %d turns\n\n\n", time);
+				exit(1);
+			} else {
+				break;
+			}
+			break;
+		case 'w':
+		case 'W': 
+			min++;
+			if(stamina == 0) {
+				printf("\n\nOUT OF STAMINA!\n\n");
+				break;
+			}
+			posy++;
+			stamina--;
+			
+			if(min == 60) {
+		    	hour++;
+		    	min = 0;
+			}
+			break;
+		case 's':
+		case 'S':
+			min++;
+			if(stamina == 0) {
+				printf("\n\nOUT OF STAMINA!\n\n");
+				break;
+			}
+			posy--;
+			stamina--;
+			
+			if(min == 60) {
+		    	hour++;
+		    	min = 0;
+			}
+			break;
+		case 'd':
+		case 'D':
+			min++;
+			if(stamina == 0) {
+				printf("\n\nOUT OF STAMINA!\n\n");
+				break;
+			}
+			posx++;
+			stamina--;
+			if(min == 60) {
+		    	hour++;
+		    	min = 0;
+			}
+			break;
+		case 'a':
+		case 'A':
+			min++;
+			if(stamina == 0) {
+				printf("\n\nOUT OF STAMINA!\n\n");
+				break;
+			}
+			posx--;
+			stamina--;
+			if(min == 60) {
+		    	hour++;
+		    	min = 0;
+			}
+		case 'r':
+		case 'R':
+			stamina++;
+			min++;
+			if(min == 60) {
+		    	hour++;
+		    	min = 0;
+			}
+			break;
+		case 'e':
+		case 'E':
+			if(posx == mposx && posy == mposy) {
+
+//ATTACK
+
+		do {
+		if(xp == 100) {
+			level++;
+		} else if (xp > 100) {
+			level++;
+			// xp = (xp - 100) + xp
+		} else {
+
+		}
+		
+		time++;
+		printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+		if(min < 10) {
+			printf("\nTIME:[%d:0%d]\n", hour, min);
+		} else {
+			printf("\nTIME:[%d:%d]\n", hour, min);
+		}
+		if(hour > 23) {
+			hour = 0;
+		}
+
+		if(n == 1){
+			if(posx >= 5 && posx <= 15 && posy >= 5 && posy <= 15) {
+				if(stamina == 0){
+					if(min == 59){
+						min = 0;
+						hour++;
+						min -= 1;
+					}
+				}
+				setloc = location[1];
+			} else if(posx >= 25 && posx <= 50 && posy >= 30 && posy <= 60){
+				if(stamina == 0){
+					if(min == 59){
+						min = 0;
+						hour++;
+						min -= 1;
+					}
+				}
+				setloc = location[2];
+
+			} else {
+				if(stamina == 0){
+					if(min == 59){
+						min = 0;
+						hour++;
+						min -= 1;
+					}
+				}
+				setloc = location[0];
+			}
+		}
+		printf("_________________________________________________________________\n");
+		printf("|[%s] [Health: %d] [Mana: %d] [Stamina: %d] [%d,%d] [%s]\n", username, player_health, mana, stamina, posx, posy, setloc);
+		printf("|[Level: %d] [%s]\n", level, classes[choice -1]);	
+		printf("|[EXP: %d]\n", xp);
+		printf("|\n");
+		printf("|<%s> [lvl: %d] [HP: %d]\n", monster[0], monsterLevel, monsterHP);
+		printf("|\n");
+		printf("|\n");
+		printf("|(1) Basic attack\n");
+		printf("_________________________________________________________________\n");
+		printf("|:-> ");
+		fgets(buffer, sizeof(buffer), stdin);
+		sscanf(buffer, "%d", &move2);
+		printf("\n|==============================================================\n");
+	
+		switch(move2) {
+		
+			case 'q':
+			case 'Q':
+				printf("\nWould you like to quit? y/N\n");
+				fgets(buffer, sizeof(buffer), stdin);
+				sscanf(buffer, "%c", &yn);
+				if(yn == 'y' || yn == 'Y') {
+					printf("\nGame Over, %s.\n\n", classes[choice-1]);
+					printf(".: %s's Stats :.\n", username);
+					printf("Total Experience: %d\n", xp);
+					printf("Total Level: %d\n", level);
+					printf("Time Spent: %d turns\n\n\n", time);
+					exit(1);
+				} else {
+					break;
+				}
+				break;
+			case 1:
+			if(monsterHP > 0) {
+				min++;
+				if(min == 60) {
+		    		hour++;
+		    		min = 0;
+				}
+			
+				if(mana != 0) {
+					mana--;
+					monsterHP -= basedmg + dmg;
+					player_health -= monsterDMG;
+				} else {
+					printf("Not enough Mana!\n");
+					player_health -= monsterDMG;
+				}
+
+			} else {
+				xp += monsterXP;
+				dead = 1;		
+				break;
+			}
+		}
+			} while(dead != 1);
+
+		} else {
+			printf("\nNo enemy found!\n");
+			break;
+		}
+		break;
+	} 
+	
+	
+	
+	} while(move != 'q' || move != 'Q');
 	
 	
 	
@@ -386,7 +614,7 @@ int main() {
 }
 
 void printIntro() {
-	
+	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 	printf("|-----------------------------------------------------------------| \n");
 	printf("|-----------------------------------------------------------------| \n");
 	printf("|-_______--_____--____------------_____-------------------_______-| \n");
